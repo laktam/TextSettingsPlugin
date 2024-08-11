@@ -15,13 +15,14 @@ import javax.swing.text.StyledDocument;
 import javax.swing.text.Style;
 
 import org.mql.jcodeeditor.documentHandlers.TextPanesHandler;
+import org.mql.jcodeeditor.plugins.Plugin;
 import org.mql.jcodeeditor.plugins.PluginSettingsProvider;
 
 /*
  * save default values to use them when deactivating 
  * and read from file when activating ?
  */
-public class TextSettingsPlugin implements PluginSettingsProvider, TextPanesHandler {
+public class TextSettingsPlugin implements Plugin, PluginSettingsProvider, TextPanesHandler {
 	private List<JTextPane> textPanes;
 	private int maxFontSize = 80;
 
@@ -32,14 +33,15 @@ public class TextSettingsPlugin implements PluginSettingsProvider, TextPanesHand
 
 	@Override
 	public List<JComponent> getSettings() {
-		Font textPaneFont = UIManager.getDefaults().getFont("JTextPane.font");
+		JTextPane dummyTextPane = new JTextPane();
+		Font textPaneFont = dummyTextPane.getFont();
 		int fontSize = textPaneFont.getSize();
 		JSlider fontSizeSlider = new JSlider(JSlider.HORIZONTAL, 1, maxFontSize, fontSize);
-		
+
 		fontSizeSlider.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				UIManager.put("JTextPane.font", textPaneFont.deriveFont(fontSizeSlider.getValue()));
+				UIManager.put("TextPane.font", textPaneFont.deriveFont((float) fontSizeSlider.getValue()));
 				for (JTextPane textPane : textPanes) {
 					changeFontSize(textPane, fontSizeSlider.getValue());
 				}
@@ -69,7 +71,29 @@ public class TextSettingsPlugin implements PluginSettingsProvider, TextPanesHand
 
 	@Override
 	public void execute() {
-		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public String getName() {
+		return "Text Settings";
+	}
+
+	@Override
+	public String getDescription() {
+		return "";
+	}
+
+	@Override
+	public void activate() {
+	}
+
+	@Override
+	public void deactivate() {
+	}
+
+	@Override
+	public boolean isActive() {
+		return true;
 	}
 
 }

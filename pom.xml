@@ -5,4 +5,12 @@
 	<groupId>org.mql.Laktam</groupId>
 	<artifactId>TextSettingsPlugin</artifactId>
 	<version>0.0.1</version>
+	
+	<dependencies>
+	  <dependency>
+            <groupId>org.mql.Laktam</groupId>
+            <artifactId>JCodeEditor</artifactId>
+            <version>1.0</version>
+        </dependency>
+  </dependencies>
 </project>
