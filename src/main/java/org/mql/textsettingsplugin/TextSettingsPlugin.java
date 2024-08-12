@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextPane;
 import javax.swing.UIManager;
@@ -33,10 +35,12 @@ public class TextSettingsPlugin implements Plugin, PluginSettingsProvider, TextP
 
 	@Override
 	public List<JComponent> getSettings() {
-		JTextPane dummyTextPane = new JTextPane();
-		Font textPaneFont = dummyTextPane.getFont();
+		// font size
+		JPanel fontSizePanel = new JPanel();
+		Font textPaneFont = new JTextPane().getFont();
 		int fontSize = textPaneFont.getSize();
 		JSlider fontSizeSlider = new JSlider(JSlider.HORIZONTAL, 1, maxFontSize, fontSize);
+		JLabel label = new JLabel("Font size : " + fontSize);
 
 		fontSizeSlider.addChangeListener(new ChangeListener() {
 			@Override
@@ -45,11 +49,14 @@ public class TextSettingsPlugin implements Plugin, PluginSettingsProvider, TextP
 				for (JTextPane textPane : textPanes) {
 					changeFontSize(textPane, fontSizeSlider.getValue());
 				}
+				label.setText("Font size : " + fontSizeSlider.getValue());
 			}
 		});
-
+		fontSizePanel.add(label);
+		fontSizePanel.add(fontSizeSlider);
+		
 		List<JComponent> settingComponents = new Vector<JComponent>();
-		settingComponents.add(fontSizeSlider);
+		settingComponents.add(fontSizePanel);
 		return settingComponents;
 	}
 
