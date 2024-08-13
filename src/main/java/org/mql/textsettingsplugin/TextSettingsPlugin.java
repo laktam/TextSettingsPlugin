@@ -19,6 +19,7 @@ import javax.swing.text.Style;
 import org.mql.jcodeeditor.documentHandlers.TextPanesHandler;
 import org.mql.jcodeeditor.plugins.Plugin;
 import org.mql.jcodeeditor.plugins.PluginSettingsProvider;
+import org.mql.jcodeeditor.properties.PropertiesManager;
 
 /*
  * save default values to use them when deactivating 
@@ -27,10 +28,17 @@ import org.mql.jcodeeditor.plugins.PluginSettingsProvider;
 public class TextSettingsPlugin implements Plugin, PluginSettingsProvider, TextPanesHandler {
 	private List<JTextPane> textPanes;
 	private int maxFontSize = 80;
+	private int fontSize;
 
 	public TextSettingsPlugin() {
 		textPanes = new Vector<JTextPane>();
 		// TODO read properties from setting.properties
+		try {
+			fontSize = Integer.parseInt(PropertiesManager.readProperty("plugins." + getName() +  ".fontSize"));
+		} catch (Exception e) {
+			fontSize = 0;
+			e.getStackTrace();
+		}
 	}
 
 	@Override
@@ -38,7 +46,9 @@ public class TextSettingsPlugin implements Plugin, PluginSettingsProvider, TextP
 		// font size
 		JPanel fontSizePanel = new JPanel();
 		Font textPaneFont = new JTextPane().getFont();
-		int fontSize = textPaneFont.getSize();
+		if (fontSize == 0) {
+			fontSize = textPaneFont.getSize();
+		}
 		JSlider fontSizeSlider = new JSlider(JSlider.HORIZONTAL, 1, maxFontSize, fontSize);
 		JLabel label = new JLabel("Font size : " + fontSize);
 
@@ -50,11 +60,12 @@ public class TextSettingsPlugin implements Plugin, PluginSettingsProvider, TextP
 					changeFontSize(textPane, fontSizeSlider.getValue());
 				}
 				label.setText("Font size : " + fontSizeSlider.getValue());
+				PropertiesManager.writeProperty("plugins." + getName() +  ".fontSize", fontSize + "");
 			}
 		});
 		fontSizePanel.add(label);
 		fontSizePanel.add(fontSizeSlider);
-		
+
 		List<JComponent> settingComponents = new Vector<JComponent>();
 		settingComponents.add(fontSizePanel);
 		return settingComponents;
