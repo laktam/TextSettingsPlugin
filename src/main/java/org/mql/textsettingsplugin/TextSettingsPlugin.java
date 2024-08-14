@@ -32,9 +32,10 @@ public class TextSettingsPlugin implements Plugin, PluginSettingsProvider, TextP
 
 	public TextSettingsPlugin() {
 		textPanes = new Vector<JTextPane>();
-		// TODO read properties from setting.properties
 		try {
-			fontSize = Integer.parseInt(PropertiesManager.readProperty("plugins." + getName() +  ".fontSize"));
+			fontSize = Integer.parseInt(PropertiesManager.readProperty("plugins." + getName() + ".fontSize"));
+			System.out.println("reading font size : " + fontSize);
+			UIManager.put("TextPane.font", new JTextPane().getFont().deriveFont((float) fontSize));
 		} catch (Exception e) {
 			fontSize = 0;
 			e.getStackTrace();
@@ -60,7 +61,7 @@ public class TextSettingsPlugin implements Plugin, PluginSettingsProvider, TextP
 					changeFontSize(textPane, fontSizeSlider.getValue());
 				}
 				label.setText("Font size : " + fontSizeSlider.getValue());
-				PropertiesManager.writeProperty("plugins." + getName() +  ".fontSize", fontSize + "");
+				PropertiesManager.writeProperty("plugins." + getName() + ".fontSize", fontSizeSlider.getValue() + "");
 			}
 		});
 		fontSizePanel.add(label);
